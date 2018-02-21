@@ -1,12 +1,12 @@
 <?php
 session_start();
 
-  $servername = "localhost:8000";
-  $username = "root";
-  $password = "";
+  $servername = "localhost";
+  $username = "krood20";
+  $password = "Soccer22!";
   $dbname = "krood20";
 
-$connect = mysqli_connect("localhost:8000", "root", "", "krood20");
+$connect = mysqli_connect($servername, $username, $password, $dbname);
 
 //checks if you added to the cart
 if(isset($_POST["add_to_cart"]))
