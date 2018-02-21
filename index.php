@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-  $servername = "localhost";
-  $username = "krood20";
-  $password = "Soccer22!";
+  $servername = "127.0.0.1";
+  $username = "root";
+  $password = "";
   $dbname = "krood20";
 
 $connect = mysqli_connect($servername, $username, $password, $dbname);
@@ -23,6 +23,7 @@ if(isset($_POST["add_to_cart"]))
                    'item_id'               =>     $_GET["id"],
                    'item_name'               =>     $_POST["hidden_name"],
                    'item_price'          =>     $_POST["hidden_price"],
+                   'item_category'          =>     $_POST["hidden_category"],
                    'item_quantity'          =>     $_POST["quantity"]
               );
               $_SESSION["shopping_cart"][$count] = $item_array;
@@ -39,6 +40,7 @@ if(isset($_POST["add_to_cart"]))
               'item_id'               =>     $_GET["id"],
               'item_name'               =>     $_POST["hidden_name"],
               'item_price'          =>     $_POST["hidden_price"],
+              'item_category'          =>     $_POST["hidden_category"],
               'item_quantity'          =>     $_POST["quantity"]
          );
          $_SESSION["shopping_cart"][0] = $item_array;
@@ -65,7 +67,7 @@ if(isset($_GET["action"]))
 <!DOCTYPE html>
 <html>
     <head>
-         <title>Webslesson Tutorial | Simple PHP Mysql Shopping Cart</title>
+         <title>Kyle's Place</title>
          <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
          <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
          <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -73,10 +75,13 @@ if(isset($_GET["action"]))
     <body>
          <br />
          <div class="container" style="width:700px;">
-              <h3 align="center">Simple PHP Mysql Shopping Cart</h3><br />
+              <h3 align="center">Welcome to Kyle's Place</h3><br />
+                <h4 align="center">The place for memes, groceries, and all your tech needs!</h4><br/>
               <?php
-              $query = "SELECT * FROM products, price ORDER BY id ASC";
+              $query = "SELECT * FROM products ORDER BY id ASC";
+              $query1 = "SELECT * FROM price ORDER BY id ASC";
               $result = mysqli_query($connect, $query);
+              $result1 = mysqli_query($connect, $query1);
 
               //error handling for a failed connection
               if (mysqli_connect_errno()){
@@ -86,20 +91,22 @@ if(isset($_GET["action"]))
               }
 
 
-              if(mysqli_num_rows($result) > 0)
+              if(mysqli_num_rows($result) > 0 and mysqli_num_rows($result1) > 0)
               {
-                   while($row = mysqli_fetch_array($result))
+                   while($row = mysqli_fetch_array($result) and $row1 = mysqli_fetch_array($result1))
                    {
               ?>
               <div class="col-md-4">
                    <form method="post" action="index.php?action=add&id=<?php echo $row["id"]; ?>">
                         <div style="border:1px solid #333; background-color:#f1f1f1; border-radius:5px; padding:16px;" align="center">
-                             <img src="<?php echo $row["image"]; ?>" class="img-responsive" /><br />
                              <h4 class="text-info"><?php echo $row["name"]; ?></h4>
-                             <h4 class="text-danger">$ <?php echo $row["price.price"]; ?></h4>
+                             <h4 class="text-danger">$ <?php echo $row1["price"]; ?></h4>
+                             <h4 class="text-danger">Category: <?php echo $row["category"]; ?></h4>
+                             <h4 class="text-danger">Stock: <?php echo $row["stock"]; ?></h4>
                              <input type="text" name="quantity" class="form-control" value="1" />
                              <input type="hidden" name="hidden_name" value="<?php echo $row["name"]; ?>" />
-                             <input type="hidden" name="hidden_price" value="<?php echo $row["price.price"]; ?>" />
+                             <input type="hidden" name="hidden_category" value="<?php echo $row["category"]; ?>" />
+                             <input type="hidden" name="hidden_price" value="<?php echo $row1["price"]; ?>" />
                              <input type="submit" name="add_to_cart" style="margin-top:5px;" class="btn btn-success" value="Add to Cart" />
                         </div>
                    </form>
