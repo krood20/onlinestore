@@ -28,19 +28,19 @@ INSERT INTO `products` (`id`, `name`, `category`, `stock`) VALUES
 (6, 'Mango', 'food', 10),
 (7, 'Bread','food', 10),
 (8, 'Computer', 'tech', 10),
-(9, 'Power Cable', 'tech', 10),
+(9, 'Power_Cable', 'tech', 10),
 (10, 'Case', 'tech', 10),
 (11, 'Headphones', 'tech', 10),
 (12, 'Printer', 'tech', 10),
 (13, 'USB', 'tech', 10),
 (14, 'Speaker','tech', 10),
 (15, 'Pepe', 'meme', 10),
-(16, 'Turtle Kid', 'meme', 10),
-(17, 'Nick Cage', 'meme', 10),
+(16, 'Turtle_Kid', 'meme', 10),
+(17, 'Nick_Cage', 'meme', 10),
 (18, 'Knuckles', 'meme', 10),
 (19, 'Dwight', 'meme', 10),
-(20, 'Why you lyin', 'meme', 10),
-(21, 'Arthur Fist','meme', 10);
+(20, 'Why_you_lyin', 'meme', 10),
+(21, 'Arthur_Fist','meme', 10);
 
 INSERT INTO `price` (`id`, `price`) VALUES
 (1, 2),

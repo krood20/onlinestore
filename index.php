@@ -63,6 +63,12 @@ if(isset($_GET["action"]))
          }
     }
 }
+
+if(isset($_GET["search"])){
+
+
+
+}
 //html and php
 ?>
 <!DOCTYPE html>
@@ -82,8 +88,28 @@ if(isset($_GET["action"]))
                 </form>
 
               <?php
+              //set the initial query values
+              $search_value=$_POST["search"];
               $query = "SELECT * FROM products ORDER BY id ASC";
               $query1 = "SELECT * FROM price ORDER BY id ASC";
+
+              if($search_value == 'meme' or $search_value == 'food' or $search_value == 'tech'){
+                  $query="SELECT * FROM products WHERE category LIKE '%$search_value%'";
+              }
+              else if($search_value == 'Broccoli' or $search_value == 'Carrot' or $search_value == 'Potato' or $search_value == 'Fish' or
+                  $search_value == 'Steak' or $search_value == 'Mango' or $search_value == 'Bread' or $search_value == 'Computer' or
+                  $search_value == 'Power_Cable' or $search_value == 'Case' or $search_value == 'Headphones' or $search_value == 'Printer' or
+                  $search_value == 'USB' or $search_value == 'Speaker' or $search_value == 'Pepe' or $search_value == 'Turtle_Kid' or
+                  $search_value == 'Nick_Cage' or $search_value == 'Knuckles' or $search_value == 'Dwight' or $search_value == 'Why_you_lyin' or
+                  $search_value == 'Arthur_Fist'){
+
+                  $query = "SELECT * FROM products WHERE name LIKE '%$search_value%'";
+
+              }
+              else{
+                  $query = "SELECT * FROM products ORDER BY id ASC";
+              }
+
               $result = mysqli_query($connect, $query);
               $result1 = mysqli_query($connect, $query1);
 
@@ -93,13 +119,6 @@ if(isset($_GET["action"]))
                   //you need to exit the script, if there is an error
                   exit();
               }
-
-              //search the database --> one query for the categories and one for the names
-              $search_value=$_POST["search"];
-              $sql="SELECT * FROM products WHERE category LIKE '%$search_value%'";
-              $sql1="SELECT * FROM products WHERE name LIKE '%$search_value%'";
-              $result3 = mysqli_query($connect, $sql);
-              $result4 = mysqli_query($connect, $sql1);
 
                 //general store page --> check if this if statement is right
                 if(mysqli_num_rows($result) > 0 and mysqli_num_rows($result1) > 0)
@@ -116,7 +135,7 @@ if(isset($_GET["action"]))
                                <h4 class="text-danger">$ <?php echo $row1["price"]; ?></h4>
                                <h4 class="text-danger">Category: <?php echo $row["category"]; ?></h4>
                                <h4 class="text-danger">Stock: <?php echo $row["stock"]; ?></h4>
-                               <input type="text" name="quantity" class="form-control" value="1" />
+                               <input type="number" min = "0" name="quantity" class="form-control" value="0" />
                                <input type="hidden" name="hidden_name" value="<?php echo $row["name"]; ?>" />
                                <input type="hidden" name="hidden_category" value="<?php echo $row["category"]; ?>" />
                                <input type="hidden" name="hidden_price" value="<?php echo $row1["price"]; ?>" />
@@ -127,6 +146,13 @@ if(isset($_GET["action"]))
                 <?php
                      }
                 }
+
+                //update the stock
+                $value = $values["item_quantity"];
+                $vname = $values["item_name"];
+                $update = "UPDATE products SET products.stock = products.stock - '$value' WHERE products.name = $vname";
+                mysqli_query($connect, $update);
+
               ?>
               <div style="clear:both"></div>
               <br />
@@ -155,8 +181,6 @@ if(isset($_GET["action"]))
                              <td><a href="index.php?action=delete&id=<?php echo $values["item_id"]; ?>"><span class="text-danger">Remove</span></a></td>
                         </tr>
                         <?php
-                                  //update the stock
-                                  //$row["stock"] = "UPDATE stock SET products.stock = products.stock - '$values["item_quantity"]'";
 
                                   $total = $total + ($values["item_quantity"] * $values["item_price"]);
                              }
