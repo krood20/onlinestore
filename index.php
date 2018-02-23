@@ -11,10 +11,23 @@ $connect = mysqli_connect($servername, $username, $password, $dbname);
 //checks if you added to the cart
 if(isset($_POST["add_to_cart"]))
 {
+    //update the stock
+    $value = $values["item_quantity"];
+    $vname = $values["item_name"];
+    $update = "UPDATE products SET products.stock = products.stock - '$value' WHERE products.name = '$vname'";
+    mysqli_query($connect, $update);
+
+    if (mysqli_query($connect, $sql)) {
+      echo "Record updated successfully";
+    }
+    else {
+      echo "Error updating record: " . mysqli_error($connect);
+    }
+
     if(isset($_SESSION["shopping_cart"]))
     {
         //getting something from array
-         $item_array_id = array_column($_SESSION["shopping_cart"], "item_id");
+         $item_array_id = array($_SESSION["shopping_cart"], "item_id");
          if(!in_array($_GET["id"], $item_array_id))
          {
               //making an array of parameters
@@ -64,11 +77,6 @@ if(isset($_GET["action"]))
     }
 }
 
-if(isset($_GET["search"])){
-
-
-
-}
 //html and php
 ?>
 <!DOCTYPE html>
@@ -135,7 +143,7 @@ if(isset($_GET["search"])){
                                <h4 class="text-danger">$ <?php echo $row1["price"]; ?></h4>
                                <h4 class="text-danger">Category: <?php echo $row["category"]; ?></h4>
                                <h4 class="text-danger">Stock: <?php echo $row["stock"]; ?></h4>
-                               <input type="number" min = "0" name="quantity" class="form-control" value="0" />
+                               <input type="number" name="quantity" class="form-control" value="0" min="1"/>
                                <input type="hidden" name="hidden_name" value="<?php echo $row["name"]; ?>" />
                                <input type="hidden" name="hidden_category" value="<?php echo $row["category"]; ?>" />
                                <input type="hidden" name="hidden_price" value="<?php echo $row1["price"]; ?>" />
@@ -146,12 +154,6 @@ if(isset($_GET["search"])){
                 <?php
                      }
                 }
-
-                //update the stock
-                $value = $values["item_quantity"];
-                $vname = $values["item_name"];
-                $update = "UPDATE products SET products.stock = products.stock - '$value' WHERE products.name = $vname";
-                mysqli_query($connect, $update);
 
               ?>
               <div style="clear:both"></div>
