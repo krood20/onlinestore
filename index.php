@@ -11,9 +11,9 @@ $connect = mysqli_connect($servername, $username, $password, $dbname);
 //checks if you added to the cart
 if(isset($_POST["add_to_cart"]))
 {
-    //update the stock
-    $value = $values["item_quantity"];
-    $vname = $values["item_name"];
+    //set the update stock variables
+    $value = $_POST["quantity"];
+    $vname = $_POST["hidden_name"];
     $update = "UPDATE products SET products.stock = products.stock - '$value' WHERE products.name = '$vname'";
     mysqli_query($connect, $update);
 
@@ -33,11 +33,11 @@ if(isset($_POST["add_to_cart"]))
               //making an array of parameters
               $count = count($_SESSION["shopping_cart"]);
               $item_array = array(
-                   'item_id'               =>     $_GET["id"],
-                   'item_name'               =>     $_POST["hidden_name"],
-                   'item_price'          =>     $_POST["hidden_price"],
-                   'item_category'          =>     $_POST["hidden_category"],
-                   'item_quantity'          =>     $_POST["quantity"]
+                   'item_id' => $_GET["id"],
+                   'item_name' => $_POST["hidden_name"],
+                   'item_price' => $_POST["hidden_price"],
+                   'item_category' => $_POST["hidden_category"],
+                   'item_quantity' => $_POST["quantity"]
               );
               $_SESSION["shopping_cart"][$count] = $item_array;
          }
@@ -50,11 +50,11 @@ if(isset($_POST["add_to_cart"]))
     else
     {
          $item_array = array(
-              'item_id'               =>     $_GET["id"],
-              'item_name'               =>     $_POST["hidden_name"],
-              'item_price'          =>     $_POST["hidden_price"],
-              'item_category'          =>     $_POST["hidden_category"],
-              'item_quantity'          =>     $_POST["quantity"]
+              'item_id' => $_GET["id"],
+              'item_name' => $_POST["hidden_name"],
+              'item_price' => $_POST["hidden_price"],
+              'item_category' => $_POST["hidden_category"],
+              'item_quantity' => $_POST["quantity"]
          );
          $_SESSION["shopping_cart"][0] = $item_array;
     }
@@ -63,12 +63,18 @@ if(isset($_POST["add_to_cart"]))
 //checks if you pressed the remove from cart button
 if(isset($_GET["action"]))
 {
+    //add back to stock
+    $update1 = "UPDATE products SET products.stock = products.stock + '$value' WHERE products.name = '$vname'";
+    mysqli_query($connect, $update1);
+
     if($_GET["action"] == "delete")
     {
+
          foreach($_SESSION["shopping_cart"] as $keys => $values)
          {
               if($values["item_id"] == $_GET["id"])
               {
+
                    unset($_SESSION["shopping_cart"][$keys]);
                    echo '<script>alert("Item Removed")</script>';
                    echo '<script>window.location="index.php"</script>';
