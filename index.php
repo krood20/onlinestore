@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-  $servername = "127.0.0.1";
-  $username = "root";
-  $password = "";
+  $servername = "localhost";
+  $username = "krood20";
+  $password = "Soccer22!";
   $dbname = "krood20";
 
 $connect = mysqli_connect($servername, $username, $password, $dbname);
@@ -17,13 +17,15 @@ if(isset($_POST["add_to_cart"]))
     $update = "UPDATE products SET products.stock = products.stock - '$value' WHERE products.name = '$vname'";
     mysqli_query($connect, $update);
 
+	//error handling
     if (mysqli_query($connect, $sql)) {
       echo "Record updated successfully";
     }
     else {
       echo "Error updating record: " . mysqli_error($connect);
     }
-
+	
+	//shopping cart session variable
     if(isset($_SESSION["shopping_cart"]))
     {
         //getting something from array
@@ -41,6 +43,7 @@ if(isset($_POST["add_to_cart"]))
               );
               $_SESSION["shopping_cart"][$count] = $item_array;
          }
+		//if an item has already been added
          else
          {
               echo '<script>alert("Item Already Added")</script>';
@@ -65,7 +68,7 @@ if(isset($_GET["action"]))
 {
     //add back to stock
     $update1 = "UPDATE products SET products.stock = products.stock + '$value' WHERE products.name = '$vname'";
-    mysqli_query($connect, $update1);
+    //mysqli_query($connect, $update1);
 
     if($_GET["action"] == "delete")
     {
@@ -106,10 +109,12 @@ if(isset($_GET["action"]))
               $search_value=$_POST["search"];
               $query = "SELECT * FROM products ORDER BY id ASC";
               $query1 = "SELECT * FROM price ORDER BY id ASC";
-
+		
+		//search by category
               if($search_value == 'meme' or $search_value == 'food' or $search_value == 'tech'){
                   $query="SELECT * FROM products WHERE category LIKE '%$search_value%'";
               }
+		//search by name
               else if($search_value == 'Broccoli' or $search_value == 'Carrot' or $search_value == 'Potato' or $search_value == 'Fish' or
                   $search_value == 'Steak' or $search_value == 'Mango' or $search_value == 'Bread' or $search_value == 'Computer' or
                   $search_value == 'Power_Cable' or $search_value == 'Case' or $search_value == 'Headphones' or $search_value == 'Printer' or
@@ -120,6 +125,7 @@ if(isset($_GET["action"]))
                   $query = "SELECT * FROM products WHERE name LIKE '%$search_value%'";
 
               }
+		//if nothing matches get all the products
               else{
                   $query = "SELECT * FROM products ORDER BY id ASC";
               }
@@ -137,9 +143,12 @@ if(isset($_GET["action"]))
                 //general store page --> check if this if statement is right
                 if(mysqli_num_rows($result) > 0 and mysqli_num_rows($result1) > 0)
                 {
-                     while($row = mysqli_fetch_array($result) and $row1 = mysqli_fetch_array($result1))
+                	//while loop to put all of the items in the store
+		     while($row = mysqli_fetch_array($result) and $row1 = mysqli_fetch_array($result1))
                      {
-                ?>
+                
+
+		?>
 
 
                 <div class="col-md-4">
@@ -160,7 +169,8 @@ if(isset($_GET["action"]))
                 <?php
                      }
                 }
-
+			
+		//the cart: all of the things you have ordered
               ?>
               <div style="clear:both"></div>
               <br />
@@ -189,7 +199,7 @@ if(isset($_GET["action"]))
                              <td><a href="index.php?action=delete&id=<?php echo $values["item_id"]; ?>"><span class="text-danger">Remove</span></a></td>
                         </tr>
                         <?php
-
+				//calculate the totals for each item
                                   $total = $total + ($values["item_quantity"] * $values["item_price"]);
                              }
                         ?>
